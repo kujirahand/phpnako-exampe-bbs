@@ -9,7 +9,7 @@ Qで条件分岐
 
 ●一覧表示とは
 　　HTML=「」
-　　「SELECT * FROM logs ORDER BY id DESC」を[]でPDO全取得。
+　　「SELECT * FROM logs ORDER BY id DESC LIMIT 30」を[]でPDO全取得。
 　　それを反復
 　　　　「<div class="line">
 <span class='name'>[[name]] &gt;</span>
@@ -24,7 +24,10 @@ Qで条件分岐
 ●書き込み処理とは
 　　名前＝「name」を空でPOST取得。
 　　本文＝「body」を空でPOST取得。
-　　もし、（名前=空）または（本文＝空）ならば
+　　キー＝「key」を空でPOST取得。
+　　もし、（名前=空）または（本文＝空）または（キー≠「ナデシコ」）ならば
+　　　　「<h2 class="title is-2 has-background-danger-light">書き込めません!</h2>」をHTML出力。
+　　　　戻る。
 　　ここまで。
 　　F今＝システム時間。
 　　SQL=「INSERT INTO logs (name,body,ctime,mtime)VALUES(?,?,?,?)」
@@ -39,26 +42,40 @@ Qで条件分岐
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>掲示板</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <style> 
-    .box { padding:1em; }
+    .box { padding:1em; margin:0.5em; border: 1px solid silver; }
     .name { color: blue; }
     .date { font-size: 0.7em; color:siver; }
     .line { border-bottom: 1px solid silver; }
+    .title { padding: 0.5em; }
   </style>
 </head>
 <body>
-<h1 style="background-color:orange;">掲示板</h1>
-<div class="box">
+<h1 class="title is-3 has-background-danger-light">
+  なでしこ3PHPで作った掲示板
+</h1>
+<div class="box" style="border:1px solid silver; margin:0.5em;">
   <form method="POST">
-    名前: <input type="text" name="name" size="20"><br>
-    本文: <input type="text" name="body" size="30">
+    名前:<input class="input" type="text" name="name" placeholder="お名前"><br>
+    本文:<input class="input" type="text" name="body" placeholder="本文">
+    合い言葉: <input class="input" type="text" name="key"
+      placeholder="「なでしこ」の4文字をカタカナでここに入力してください。">
     <input type="hidden" name="q" value="write">
-    <input type="submit" value="書き込み">
+    <input type="submit" value="書き込み" class="button">
   </form>
 </div>
 <div class="box">
 __BODY__
+</div>
+<div class="box">
+  <p>情報:</p>
+  <ul>
+    <li><a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/blob/main/index.nako3">この掲示板のソースコードはこちら</a></li>
+    <li><a class="button" href="https://github.com/kujirahand/nadesiko3php">なでしこ3PHP(nadesiko3php)</a></li>
+  </ul>
 </div>
 </body>
 </html>

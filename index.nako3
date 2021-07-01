@@ -1,0 +1,80 @@
+# なでしこで作った掲示板 for nadesiko3php
+「sqlite:./logs.sqlite3」のPDO生成して、DB作成処理。
+Q=「q」を「list」でPOST取得
+Qで条件分岐
+　「list」ならば、一覧表示💧
+　「write」ならば、書込処理💧
+　違えば、一覧表示。💧
+ここまで。
+
+●一覧表示とは
+　　HTML=「」
+　　「SELECT * FROM logs ORDER BY id DESC」を[]でPDO全取得。
+　　それを反復
+　　　　「<div class="line">
+<span class='name'>[[name]] &gt;</span>
+[[body]] 
+<span class='date'>([[mtime|date]] [[mtime|time]])</span>
+</div>」に対象をHTML埋め込んでSに代入。
+　　　　HTML=HTML&S
+　　ここまで。
+　　HTMLをHTML出力。
+ここまで。
+
+●書き込み処理とは
+　　名前＝「name」を空でPOST取得。
+　　本文＝「body」を空でPOST取得。
+　　もし、（名前=空）または（本文＝空）ならば
+　　ここまで。
+　　F今＝システム時間。
+　　SQL=「INSERT INTO logs (name,body,ctime,mtime)VALUES(?,?,?,?)」
+　　SQLを[名前,本文,F今,F今]でPDO実行。
+　　「location:./」をヘッダ設定。
+　　「<h2><a href="./">書き込みました</a></h2>」をHTML出力。
+ここまで。
+
+●(BODYを)HTML出力とは
+　　S=『
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>掲示板</title>
+  <style> 
+    .box { padding:1em; }
+    .name { color: blue; }
+    .date { font-size: 0.7em; color:siver; }
+    .line { border-bottom: 1px solid silver; }
+  </style>
+</head>
+<body>
+<h1 style="background-color:orange;">掲示板</h1>
+<div class="box">
+  <form method="POST">
+    名前: <input type="text" name="name" size="20"><br>
+    本文: <input type="text" name="body" size="30">
+    <input type="hidden" name="q" value="write">
+    <input type="submit" value="書き込み">
+  </form>
+</div>
+<div class="box">
+__BODY__
+</div>
+</body>
+</html>
+』
+　　Sの「__BODY__」をBODYに置換して表示。
+ここまで。
+
+●DB作成処理とは
+「
+CREATE TABLE IF NOT EXISTS logs (
+  id      INTEGER PRIMARY KEY,
+  name    TEXT DEFAULT '',
+  body    TEXT DEFAULT '',
+  ctime   INTEGER DEFAULT 0,
+  mtime   INTEGER DEFAULT 0,
+  delkey  TEXT DEFAULT ''
+)
+」を[]でPDO実行。
+ここまで。

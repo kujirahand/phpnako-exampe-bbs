@@ -1,3 +1,6 @@
+src
+*.php
+
 # Logs
 logs
 *.log

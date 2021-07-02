@@ -1,19 +1,25 @@
 # なでしこで作った掲示板 for nadesiko3php
-「sqlite:./logs.sqlite3」のPDO生成して、DB作成処理。
-Q=「q」を「list」でPOST取得
-Qで条件分岐
-　「list」ならば、一覧表示💧
-　「write」ならば、書込処理💧
+# === 設定 ===
+合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
+合い言葉答え＝「ナデシコ」
+DB保存先＝「./logs.sqlite3」
+
+# === メイン処理 ===
+DB作成処理。
+実行モード=「実行モード」を「一覧表示」でPOST取得
+実行モードで条件分岐
+　「一覧表示」ならば、一覧表示💧
+　「書き込み」ならば、書込処理💧
 　違えば、一覧表示。💧
 ここまで。
 
 ●一覧表示とは
 　　HTML=「」
-　　「SELECT * FROM logs ORDER BY id DESC LIMIT 30」を[]でPDO全取得。
+　　DBログ取得処理。
 　　それを反復
 　　　　「<div class="line">
-<span class='name'>[[name]] &gt;</span>
-[[body]] 
+<span class="name">[[name]] &gt;</span>
+<span class="body">[[body]]</span>
 <span class='date'>([[mtime|date]] [[mtime|time]])</span>
 </div>」に対象をHTML埋め込んでSに代入。
 　　　　HTML=HTML&S
@@ -22,12 +28,16 @@ Qで条件分岐
 ここまで。
 
 ●書き込み処理とは
-　　名前＝「name」を空でPOST取得。
-　　本文＝「body」を空でPOST取得。
-　　キー＝「key」を空でPOST取得。
-　　もし、（名前=空）または（本文＝空）または（キー≠「ナデシコ」）ならば
-　　　　「<h2 class="title is-2 has-background-danger-light">書き込めません!</h2>」をHTML出力。
-　　　　戻る。
+　　名前＝「名前」を空でPOST取得。
+　　本文＝「本文」を空でPOST取得。
+　　言葉＝「合い言葉」を空でPOST取得。
+　　もし、（名前=空）または（本文＝空）ならば
+　　　　「名前と本文を指定してください！」を警告指定。
+　　　　それをHTML出力して戻る。
+　　ここまで。
+　　もし、（言葉≠合い言葉答え）ならば
+　　　　「合い言葉が違うため書き込めません!」を警告指定。
+　　　　それをHTML出力して戻る。
 　　ここまで。
 　　F今＝システム時間。
 　　SQL=「INSERT INTO logs (name,body,ctime,mtime)VALUES(?,?,?,?)」
@@ -37,8 +47,40 @@ Qで条件分岐
 ここまで。
 
 ●(BODYを)HTML出力とは
-　　S=『
-<!DOCTYPE html>
+　　それは「
+{HTMLヘッダ取得}
+{HTMLフォーム取得}
+  <div class="box">
+  {BODY}
+  </div>
+{HTMLフッタ取得}」
+　　それを表示。
+ここまで。
+
+●(Sを)警告指定とは
+　　それは「
+<h2 class="title is-2 has-background-danger-light">{S}</h2>
+<div><a href="./" class="button">→一覧表示</a></div>
+」
+ここまで。
+
+●HTMLフォーム取得とは
+　　それは「
+<div class="box" style="border:1px solid silver; margin:0.5em;">
+  <form method="POST">
+    名前:<input class="input" type="text" name="名前" placeholder="お名前"><br>
+    本文:<input class="input" type="text" name="本文" placeholder="本文">
+    合い言葉: <input class="input" type="text" name="合い言葉"
+      placeholder="{合い言葉質問}">
+    <input type="hidden" name="実行モード" value="書き込み">
+    <input type="submit" value="書き込み" class="button is-primary">
+  </form>
+</div>
+」
+ここまで。
+
+●HTMLヘッダ取得とは
+　　それは『<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -48,6 +90,7 @@ Qで条件分岐
   <style> 
     .box { padding:1em; margin:0.5em; border: 1px solid silver; }
     .name { color: blue; }
+    .body { font-size: 1.1em; }
     .date { font-size: 0.7em; color:siver; }
     .line { border-bottom: 1px solid silver; }
     .title { padding: 0.5em; }
@@ -57,34 +100,30 @@ Qで条件分岐
 <h1 class="title is-3 has-background-danger-light">
   なでしこ3PHPで作った掲示板
 </h1>
-<div class="box" style="border:1px solid silver; margin:0.5em;">
-  <form method="POST">
-    名前:<input class="input" type="text" name="name" placeholder="お名前"><br>
-    本文:<input class="input" type="text" name="body" placeholder="本文">
-    合い言葉: <input class="input" type="text" name="key"
-      placeholder="「なでしこ」の4文字をカタカナでここに入力してください。">
-    <input type="hidden" name="q" value="write">
-    <input type="submit" value="書き込み" class="button">
-  </form>
-</div>
+』
+ここまで。
+
+●HTMLフッタ取得とは
+　　それは「
 <div class="box">
-__BODY__
-</div>
-<div class="box">
-  <p>情報:</p>
+  <h5 class="title is-5" style="border-bottom:1px solid silver;">
+    参照情報:</h5>
   <ul>
     <li><a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/blob/main/index.nako3">この掲示板のソースコードはこちら</a></li>
-    <li><a class="button" href="https://github.com/kujirahand/nadesiko3php">なでしこ3PHP(nadesiko3php)</a></li>
+    <li>
+      <a class="button" href="https://nadesi.com/">なでしこ</a> &gt; <a class="button" href="https://github.com/kujirahand/nadesiko3php">なでしこ3PHP(nadesiko3php)</a>
+    </li>
   </ul>
 </div>
-</body>
-</html>
-』
-　　Sの「__BODY__」をBODYに置換して表示。
+<div class="box">
+  <a href="https://nadesi.com">『なでしこで誰でも簡単プログラマー』</a>
+</div>
+</body></html>」
 ここまで。
 
 ●DB作成処理とは
-「
+　　「sqlite:{DB保存先}」のPDO生成。
+　　SQL=「
 CREATE TABLE IF NOT EXISTS logs (
   id      INTEGER PRIMARY KEY,
   name    TEXT DEFAULT '',
@@ -92,6 +131,11 @@ CREATE TABLE IF NOT EXISTS logs (
   ctime   INTEGER DEFAULT 0,
   mtime   INTEGER DEFAULT 0,
   delkey  TEXT DEFAULT ''
-)
-」を[]でPDO実行。
+)」
+　　SQLを[]でPDO実行。
+ここまで。
+
+●DBログ取得処理とは
+　　SQL=「SELECT * FROM logs ORDER BY id DESC LIMIT 30」
+　　SQLを[]でPDO全取得。
 ここまで。

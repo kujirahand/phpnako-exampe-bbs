@@ -1,20 +1,36 @@
 # phpnako-exampe-bbs --- なでしこ3PHPのサンプル
 
-なでしこ3PHPをインストール。
+ - [なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
+
+# このサンプルプロジェクトは何？
+
+なでしこ3PHPで掲示板(BBS)を作ってみたデモプログラムです。
+簡単なWEBアプリ作成のサンプルです。
+
+WEBアプリの開発では、プログラミング言語＋HTML＋CSS＋SQLとたくさんの知識が必要になります。
+なでしこ3PHPを使えば、プログラミング言語を日本語で楽しく記述できます。
+
+## セットアップの方法
+
+まずは、Node.jsをインストールし、その後、なでしこ3PHPをインストールします。
+ターミナル(ターミナル.app / PowerShell)を起動し、以下のコマンドを実行すると、なでしこ3PHPがインストールされます。
 
 ```
-$ npm i nadesiko3php
+$ npm install nadesiko3php
 ```
 
-# プログラムを変換する方法
+## プログラムを変換する方法
+
+以下のコマンドを実行すると、なでしこのプログラムがPHPに変換されます。
 
 ```
 $ npm start
 ```
 
-あるいは
+あるいは、Linux/macOSでは以下のように書いても同じです。
 
 ```
-$ $(npm bin)/phpnako -r .
+$ npm -g nadesiko3php 
+$ phpnako -r .
 ```
 

@@ -1,5 +1,6 @@
 # なでしこで作った掲示板 for nadesiko3php
 # === 設定 ===
+BBSタイトル=「なでしこ3PHPで作った掲示板」
 合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
 合い言葉答え＝「ナデシコ」
 DB保存先＝「./logs.sqlite3」
@@ -85,7 +86,7 @@ DB作成処理。
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>掲示板</title>
+  <title>[[タイトル]]</title>
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <style> 
     .box { padding:1em; margin:0.5em; border: 1px solid silver; }
@@ -98,9 +99,9 @@ DB作成処理。
 </head>
 <body>
 <h1 class="title is-3 has-background-danger-light">
-  なでしこ3PHPで作った掲示板
+    [[タイトル]]
 </h1>
-』
+』に{"タイトル":BBSタイトル}をHTML埋め込み
 ここまで。
 
 ●HTMLフッタ取得とは

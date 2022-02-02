@@ -1,27 +1,34 @@
 # なでしこで作った掲示板 for nadesiko3php
 # === 設定 ===
-APPタイトル=「なでしこチャット大会2022 - 注意 - 制作中」
+APPタイトル=「なでしこチャット大会2022 - 制作中」
 合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
 合い言葉答え＝「ナデシコ」
 DB保存先＝「./chatlogs.sqlite3」
+# === セッションで管理する変数 ===
 セッション開始。
+F名前＝「」
+FID＝「」
 
 # === メイン処理 ===
 DB作成処理。
 メイン処理。
 
 ●メイン処理とは
-　　実行モード=「実行モード」を「一覧表示」でPOST取得。
+　　実行モード=「mode」を「list」でGET取得。
 　　実行モードで条件分岐
-　　　「一覧表示」ならば、一覧表示💧
+　　　「in」ならば、入室画面表示💧
+　　　「out」ならば、退室画面表示💧
+　　　「in_go」ならば、入室処理💧
+　　　「list」ならば、一覧表示💧
 　　　「書き込み」ならば、書込処理💧
 　　　違えば、一覧表示。💧
 　　ここまで。
 ここまで。
 
 ●一覧表示とは
-　　入室チェック。
-　　もし、いいえならば、戻る。
+　　もし、入室チェック＝いいえならば、戻る。
+　　F名前＝「名前」を「名無し」でセッション取得。
+　　FID＝「FID」を「」でセッション取得。
 　　HTML=「」
 　　DBログ取得処理。
 　　それを反復
@@ -36,7 +43,7 @@ DB作成処理。
 ここまで。
 
 ●入室チェックとは
-　　F名前＝「ユーザー名」を「」でセッション取得。
+　　F名前＝「F名前」を「」でセッション取得。
 　　もし、F名前が空ならば
 　　　　入室画面表示。
 　　　　いいえで戻る。
@@ -44,20 +51,35 @@ DB作成処理。
 　　はいで戻る。
 ここまで。
 
+●退室画面表示とは
+　　「F名前」を「」へセッション設定。
+　　「FID」を「」へセッション設定。
+　　「
+            <h2 class="title is-3">退室しました</h2>
+            <div class="box">お疲れさまでした。ありがとうございました。</div>
+        」をHTML出力。
+ここまで。
+
 ●入室画面表示とは
 　　「
-            <h2 class="title is-3">ようこそ、『{APPタイトル}』へ</h2>
+            <h2 class="title is-4">ようこそ！『{APPタイトル}』へ</h2>
             <div class="box">
-                お名前を入力してください！<br>
-                <input class="input" type="text" name="ユーザー名" size="16" placeholder="お名前"><br>
+                <form action="index.php?mode=in_go" method="post">
+                お名前は？<br>
+                <input class="input" type="text" name="F名前" size="16" placeholder="お名前"><br>
                 <input class="button is-primary" type="submit" value="入室">
-            </div>
-            <div class="box">
-                <h3>オプション:</h3>
-                投稿を削除したい時のキーを入力<br>
-                <input class="input" type="text" name="delkey" size="16" placeholder="削除キー">
+                </form>
             </div>
         」をHTML出力。
+ここまで。
+
+●入室処理とは
+　　F名前＝「F名前」を「名無し」でPOST取得。
+　　FID＝（システム時間ミリ秒）＆「#」&(9999の乱数)。
+　　「F名前」をF名前でセッション設定。
+　　「FID」をFIDでセッション設定。
+　　「location: ./」にヘッダ設定。
+　　「<a href="./">{F名前}：here</a>」をHTML出力。
 ここまで。
 
 ●書き込み処理とは
@@ -112,6 +134,7 @@ DB作成処理。
 ここまで。
 
 ●HTMLヘッダ取得とは
+　　F名前=「F名前」を「名無しさん」でセッション取得。
 　　それは『<!DOCTYPE html>
 <html>
 <head>
@@ -122,10 +145,13 @@ DB作成処理。
    <link rel="stylesheet" href="./chat.css">
 </head>
 <body>
+<div class="box">
+    [<a href="index.php?mode=in">入室</a>] - [<a href="index.php?mode=out">退室</a>] - [[F名前]]さん、こんにちは。
+</div>
 <h1 class="title is-3 has-background-danger-light">
     [[タイトル]]
 </h1>
-』に{"タイトル":APPタイトル}をHTML埋め込み
+』に{"タイトル":APPタイトル,"F名前":F名前}をHTML埋め込み
 ここまで。
 
 ●HTMLフッタ取得とは

@@ -20,25 +20,63 @@ DB作成処理。
 　　　「out」ならば、退室画面表示💧
 　　　「in_go」ならば、入室処理💧
 　　　「list」ならば、一覧表示💧
-　　　「書き込み」ならば、書込処理💧
+　　　「all-list」ならば、全部表示💧
+　　　「api-write」ならば、API書込処理💧
+　　　「api-list」ならば、API一覧取得💧
 　　　違えば、一覧表示。💧
 　　ここまで。
+ここまで。
+
+●API一覧取得とは
+　　DBログ取得処理。
+　　それをログHTML取得して表示。
+ここまで。
+
+●（データを）ログHTML取得とは
+　　HTML=""
+　　データを反復
+　　　　# --- 改行を処理 ---
+　　　　対象["body"]のCHR(10)を「¶」に置換。
+　　　　それをHTML変換。
+　　　　それの「¶」を「<br>」に置換。
+　　　　対象["body"] = それ。
+　　　　「<div class="line">
+<div class="name">[[name]]</div>
+<div class="body">[[body | raw]]</div>
+<div class='date'>([[mtime|date]] [[mtime|time]])</div>
+</div>」に対象をHTML埋め込んでSに代入。
+　　　　HTML=HTML&S
+　　ここまで。
+　　HTMLを戻す。
+ここまで。
+
+●全部表示とは
+　　ログ全部＝「」
+　　DB全部ログ取得処理。
+　　それをログHTML取得して、ログ全部に代入。
+　　「
+<h2 class="title is-4">ログ全部表示</h2>
+<div><a href="index.php">→チャット画面に戻る</a></div>
+{ログ全部}
+<div><a href="index.php">→チャット画面に戻る</a></div>
+        」をHTML出力。
 ここまで。
 
 ●一覧表示とは
 　　もし、入室チェック＝いいえならば、戻る。
 　　F名前＝「名前」を「名無し」でセッション取得。
 　　FID＝「FID」を「」でセッション取得。
-　　HTML=「」
-　　DBログ取得処理。
-　　それを反復
-　　　　「<div class="line">
-<span class="name">[[name]] &gt;</span>
-<span class="body">[[body]]</span>
-<span class='date'>([[mtime|date]] [[mtime|time]])</span>
-</div>」に対象をHTML埋め込んでSに代入。
-　　　　HTML=HTML&S
-　　ここまで。
+　　HTML=「
+            <div class="box">
+                コメント: <textarea class="input" id="comment-box" placeholder="コメントはこちらに"></textarea><br>
+                <button id="write_button" class="button is-primary">発言</button>
+            </div>
+            <div class="box">
+                <div id="logs_time" class="logs_time"></div>
+                <div id="logs"></div>
+                <div><a href="index.php?mode=all-list">😀→ログ全部表示</a></div>
+            </div>
+      」
 　　HTMLをHTML出力。
 ここまで。
 
@@ -82,23 +120,19 @@ DB作成処理。
 　　「<a href="./">{F名前}：here</a>」をHTML出力。
 ここまで。
 
-●書き込み処理とは
-　　名前＝「名前」を空でPOST取得。
-　　本文＝「本文」を空でPOST取得。
-　　言葉＝「合い言葉」を空でPOST取得。
-　　もし、（名前=空）または（本文＝空）ならば
-　　　　「名前と本文を指定してください！」を警告指定。
-　　　　それをHTML出力して戻る。
-　　ここまで。
-　　もし、（言葉≠合い言葉答え）ならば
-　　　　「合い言葉が違うため書き込めません!」を警告指定。
-　　　　それをHTML出力して戻る。
+●API書込処理とは
+　　F名前＝「F名前」を「名無し」でセッション取得。
+　　FID＝「FID」を「」でセッション取得。
+　　コメント＝「comment」を空でPOST取得。
+　　「Content-Type: application/json」にヘッダ設定。
+　　もし、（コメント＝空）ならば
+　　　　『{"result": "error", "reason": "commentがありません"}』を表示。
+　　　　戻る。
 　　ここまで。
 　　F今＝システム時間。
-　　SQL=「INSERT INTO logs (name,body,ctime,mtime)VALUES(?,?,?,?)」
-　　SQLを[名前,本文,F今,F今]でPDO実行。
-　　「location:./」にヘッダ設定。
-　　「<h2><a href="./">書き込みました</a></h2>」をHTML出力。
+　　SQL=「INSERT INTO logs (name, body, ctime, mtime, delkey) VALUES (?,?,?,?,?)」
+　　SQLを[F名前,コメント,F今,F今,FID]でPDO実行。
+　　｛"result":"ok"}をJSONエンコードして表示。
 ここまで。
 
 ●(BODYを)HTML出力とは
@@ -135,6 +169,11 @@ DB作成処理。
 
 ●HTMLヘッダ取得とは
 　　F名前=「F名前」を「名無しさん」でセッション取得。
+　　FID=「FID」を「」でセッション取得。
+　　クライアントコード＝「」
+　　もし、FIDが空でなければ
+　　　　クライアントコード＝「./client.txt」を開く。
+　　ここまで。
 　　それは『<!DOCTYPE html>
 <html>
 <head>
@@ -142,33 +181,32 @@ DB作成処理。
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>[[タイトル]]</title>
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-   <link rel="stylesheet" href="./chat.css">
+   <link rel="stylesheet" href="./chat.css?r=100">
+   <script type="text/javascript"
+ src="https://nadesi.com/v3/cdn.php?v=3.2.40&f=release/wnako3.js&run"
+></script>
+    <script type="なでしこ">
+[[クライアントコード|raw]]
+    </script>
 </head>
 <body>
 <div class="box">
-    [<a href="index.php?mode=in">入室</a>] - [<a href="index.php?mode=out">退室</a>] - [[F名前]]さん、こんにちは。
+    [<a href="index.php?mode=in">入室</a>] - [<a href="index.php?mode=out">退室</a>] - [<a href="index.php?mode=list">一覧</a>] - [[F名前]]さん、こんにちは。
 </div>
 <h1 class="title is-3 has-background-danger-light">
     [[タイトル]]
 </h1>
-』に{"タイトル":APPタイトル,"F名前":F名前}をHTML埋め込み
+』に{
+        "タイトル": APPタイトル,
+        "F名前": F名前,
+        "クライアントコード": クライアントコード,
+    }をHTML埋め込み
 ここまで。
 
 ●HTMLフッタ取得とは
 　　それは「
 <div class="box">
-  <h5 class="title is-5" style="border-bottom:1px solid silver;">
-    参照情報:</h5>
-  <ul>
-    <li><a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/blob/main/index.nako3">この掲示板のソースコードはこちら</a></li>
-    <li>
-      <a class="button" href="https://nadesi.com/">なでしこ</a> &gt; <a class="button" href="https://github.com/kujirahand/nadesiko3php">なでしこ3PHP(nadesiko3php)</a>
-    </li>
-  </ul>
-</div>
-<div class="box">
-  <a href="https://nadesi.com">『なでしこで誰でも簡単プログラマー』</a>
-</div>
+<div><a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/">これは、なでしこ3PHPで作ったチャットです！</a></div>
 </body></html>」
 ここまで。
 
@@ -188,5 +226,10 @@ CREATE TABLE IF NOT EXISTS logs (
 
 ●DBログ取得処理とは
 　　SQL=「SELECT * FROM logs ORDER BY id DESC LIMIT 30」
+　　SQLを[]でPDO全取得。
+ここまで。
+
+●DB全部ログ取得処理とは
+　　SQL=「SELECT * FROM logs ORDER BY id」
 　　SQLを[]でPDO全取得。
 ここまで。

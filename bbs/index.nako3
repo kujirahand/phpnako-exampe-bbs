@@ -1,6 +1,6 @@
 # なでしこで作った掲示板 for nadesiko3php
 # === 設定 ===
-BBSタイトル=「なでしこ3PHPで作った一行チャット」
+BBSタイトル=「なでしこ3PHPで作った掲示板」
 合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
 合い言葉答え＝「ナデシコ」
 DB保存先＝「./logs.sqlite3」
@@ -52,7 +52,8 @@ DB作成処理。
 {HTMLヘッダ取得}
 {HTMLフォーム取得}
   <div class="box">
-  {BODY}
+    <h2 class="title is-5">書き込みの一覧</h2>
+    {BODY}
   </div>
 {HTMLフッタ取得}」
 　　それを表示。
@@ -107,17 +108,7 @@ DB作成処理。
 ●HTMLフッタ取得とは
 　　それは「
 <div class="box">
-  <h5 class="title is-5" style="border-bottom:1px solid silver;">
-    参照情報:</h5>
-  <ul>
-    <li><a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/blob/main/index.nako3">この掲示板のソースコードはこちら</a></li>
-    <li>
-      <a class="button" href="https://nadesi.com/">なでしこ</a> &gt; <a class="button" href="https://github.com/kujirahand/nadesiko3php">なでしこ3PHP(nadesiko3php)</a>
-    </li>
-  </ul>
-</div>
-<div class="box">
-  <a href="https://nadesi.com">『なでしこで誰でも簡単プログラマー』</a>
+    <a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/">この掲示板のソースコードはこちら</a>
 </div>
 </body></html>」
 ここまで。

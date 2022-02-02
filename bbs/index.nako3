@@ -1,6 +1,6 @@
 # なでしこで作った掲示板 for nadesiko3php
 # === 設定 ===
-BBSタイトル=「なでしこ3PHPで作った掲示板」
+BBSタイトル=「なでしこ3PHPで作った一行チャット」
 合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
 合い言葉答え＝「ナデシコ」
 DB保存先＝「./logs.sqlite3」
@@ -43,7 +43,7 @@ DB作成処理。
 　　F今＝システム時間。
 　　SQL=「INSERT INTO logs (name,body,ctime,mtime)VALUES(?,?,?,?)」
 　　SQLを[名前,本文,F今,F今]でPDO実行。
-　　「location:./」をヘッダ設定。
+　　「location:./」にヘッダ設定。
 　　「<h2><a href="./">書き込みました</a></h2>」をHTML出力。
 ここまで。
 

@@ -1,0 +1,20 @@
+{
+  "name": "phpnako-exampe-bbs-chat",
+  "version": "1.0.0",
+  "description": "なでしこ3PHPのサンプル-チャット",
+  "main": "index.js",
+  "scripts": {
+    "start": "phpnako -r .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kujirahand/phpnako-exampe-bbs.git"
+  },
+  "author": "kujirahand <web@kujirahand.com> (https://kujirahand.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kujirahand/phpnako-exampe-bbs/issues"
+  },
+  "homepage": "https://github.com/kujirahand/phpnako-exampe-bbs#readme"
+}

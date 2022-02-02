@@ -1,0 +1,11 @@
+h2 {
+	font-size: 2em;
+	border-bottom: 2px solid #ffc0c0;
+}
+
+.box { padding:1em; margin:0.5em; border: 1px solid silver; }
+.name { color: blue; }
+.body { font-size: 1.1em; }
+.date { font-size: 0.7em; color:siver; }
+.line { border-bottom: 1px solid silver; }
+.title { padding: 0.5em; }

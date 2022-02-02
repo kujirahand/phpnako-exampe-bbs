@@ -1,0 +1,166 @@
+# なでしこで作った掲示板 for nadesiko3php
+# === 設定 ===
+APPタイトル=「なでしこチャット大会2022 - 注意 - 制作中」
+合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
+合い言葉答え＝「ナデシコ」
+DB保存先＝「./chatlogs.sqlite3」
+セッション開始。
+
+# === メイン処理 ===
+DB作成処理。
+メイン処理。
+
+●メイン処理とは
+　　実行モード=「実行モード」を「一覧表示」でPOST取得。
+　　実行モードで条件分岐
+　　　「一覧表示」ならば、一覧表示💧
+　　　「書き込み」ならば、書込処理💧
+　　　違えば、一覧表示。💧
+　　ここまで。
+ここまで。
+
+●一覧表示とは
+　　入室チェック。
+　　もし、いいえならば、戻る。
+　　HTML=「」
+　　DBログ取得処理。
+　　それを反復
+　　　　「<div class="line">
+<span class="name">[[name]] &gt;</span>
+<span class="body">[[body]]</span>
+<span class='date'>([[mtime|date]] [[mtime|time]])</span>
+</div>」に対象をHTML埋め込んでSに代入。
+　　　　HTML=HTML&S
+　　ここまで。
+　　HTMLをHTML出力。
+ここまで。
+
+●入室チェックとは
+　　F名前＝「ユーザー名」を「」でセッション取得。
+　　もし、F名前が空ならば
+　　　　入室画面表示。
+　　　　いいえで戻る。
+　　ここまで。
+　　はいで戻る。
+ここまで。
+
+●入室画面表示とは
+　　「
+            <h2 class="title is-3">ようこそ、『{APPタイトル}』へ</h2>
+            <div class="box">
+                お名前を入力してください！<br>
+                <input class="input" type="text" name="ユーザー名" size="16" placeholder="お名前"><br>
+                <input class="button is-primary" type="submit" value="入室">
+            </div>
+            <div class="box">
+                <h3>オプション:</h3>
+                投稿を削除したい時のキーを入力<br>
+                <input class="input" type="text" name="delkey" size="16" placeholder="削除キー">
+            </div>
+        」をHTML出力。
+ここまで。
+
+●書き込み処理とは
+　　名前＝「名前」を空でPOST取得。
+　　本文＝「本文」を空でPOST取得。
+　　言葉＝「合い言葉」を空でPOST取得。
+　　もし、（名前=空）または（本文＝空）ならば
+　　　　「名前と本文を指定してください！」を警告指定。
+　　　　それをHTML出力して戻る。
+　　ここまで。
+　　もし、（言葉≠合い言葉答え）ならば
+　　　　「合い言葉が違うため書き込めません!」を警告指定。
+　　　　それをHTML出力して戻る。
+　　ここまで。
+　　F今＝システム時間。
+　　SQL=「INSERT INTO logs (name,body,ctime,mtime)VALUES(?,?,?,?)」
+　　SQLを[名前,本文,F今,F今]でPDO実行。
+　　「location:./」にヘッダ設定。
+　　「<h2><a href="./">書き込みました</a></h2>」をHTML出力。
+ここまで。
+
+●(BODYを)HTML出力とは
+　　それは「
+{HTMLヘッダ取得}
+  <div class="box">
+  {BODY}
+  </div>
+{HTMLフッタ取得}」
+　　それを表示。
+ここまで。
+
+●(Sを)警告指定とは
+　　それは「
+<h2 class="title is-2 has-background-danger-light">{S}</h2>
+<div><a href="./" class="button">→一覧表示</a></div>
+」
+ここまで。
+
+●HTMLフォーム取得とは
+　　それは「
+<div class="box" style="border:1px solid silver; margin:0.5em;">
+  <form method="POST">
+    名前:<input class="input" type="text" name="名前" placeholder="お名前"><br>
+    本文:<input class="input" type="text" name="本文" placeholder="本文">
+    合い言葉: <input class="input" type="text" name="合い言葉"
+      placeholder="{合い言葉質問}">
+    <input type="hidden" name="実行モード" value="書き込み">
+    <input type="submit" value="書き込み" class="button is-primary">
+  </form>
+</div>
+」
+ここまで。
+
+●HTMLヘッダ取得とは
+　　それは『<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[[タイトル]]</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+   <link rel="stylesheet" href="./chat.css">
+</head>
+<body>
+<h1 class="title is-3 has-background-danger-light">
+    [[タイトル]]
+</h1>
+』に{"タイトル":APPタイトル}をHTML埋め込み
+ここまで。
+
+●HTMLフッタ取得とは
+　　それは「
+<div class="box">
+  <h5 class="title is-5" style="border-bottom:1px solid silver;">
+    参照情報:</h5>
+  <ul>
+    <li><a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/blob/main/index.nako3">この掲示板のソースコードはこちら</a></li>
+    <li>
+      <a class="button" href="https://nadesi.com/">なでしこ</a> &gt; <a class="button" href="https://github.com/kujirahand/nadesiko3php">なでしこ3PHP(nadesiko3php)</a>
+    </li>
+  </ul>
+</div>
+<div class="box">
+  <a href="https://nadesi.com">『なでしこで誰でも簡単プログラマー』</a>
+</div>
+</body></html>」
+ここまで。
+
+●DB作成処理とは
+　　「sqlite:{DB保存先}」のPDO生成。
+　　SQL=「
+CREATE TABLE IF NOT EXISTS logs (
+  id      INTEGER PRIMARY KEY,
+  name    TEXT DEFAULT '',
+  body    TEXT DEFAULT '',
+  ctime   INTEGER DEFAULT 0,
+  mtime   INTEGER DEFAULT 0,
+  delkey  TEXT DEFAULT ''
+)」
+　　SQLを[]でPDO実行。
+ここまで。
+
+●DBログ取得処理とは
+　　SQL=「SELECT * FROM logs ORDER BY id DESC LIMIT 30」
+　　SQLを[]でPDO全取得。
+ここまで。

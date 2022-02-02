@@ -1,6 +1,6 @@
-# なでしこで作った掲示板 for nadesiko3php
+# なでしこで作ったチャット for nadesiko3php
 # === 設定 ===
-APPタイトル=「なでしこチャット大会2022 - 制作中」
+APPタイトル=「なでしこチャット大会2022年」
 合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
 合い言葉答え＝「ナデシコ」
 DB保存先＝「./chatlogs.sqlite3」
@@ -105,6 +105,8 @@ DB作成処理。
                 <form action="index.php?mode=in_go" method="post">
                 お名前は？<br>
                 <input class="input" type="text" name="F名前" size="16" placeholder="お名前"><br>
+                合い言葉を入力してください。<br>
+                <input class="input" type="text" name="合い言葉" size="16" placeholder="{合い言葉質問}"><br>
                 <input class="button is-primary" type="submit" value="入室">
                 </form>
             </div>
@@ -112,6 +114,14 @@ DB作成処理。
 ここまで。
 
 ●入室処理とは
+　　F合い言葉＝「合い言葉」を「」でPOST取得。
+　　もし、F合い言葉≠合い言葉答えならば
+　　　　「<h1 class="title is-3">合い言葉の間違い</h1>
+<p>合い言葉が違います。合い言葉には、『{合い言葉答え}』と入力してください。</p>
+<p><a href="index.php?mode=in">→戻る</a></p>
+            」をHTML出力。
+　　　　戻る。
+　　ここまで。
 　　F名前＝「F名前」を「名無し」でPOST取得。
 　　FID＝（システム時間ミリ秒）＆「#」&(9999の乱数)。
 　　「F名前」をF名前でセッション設定。

@@ -90,6 +90,13 @@ DB作成処理。
 ここまで。
 
 ●退室画面表示とは
+　　F名前＝「F名前」を「」でセッション取得。
+　　FID＝「FID」を「」でセッション取得。
+　　もし、F名前≠空ならば
+　　　　F今＝システム時間。
+　　　　SQL=「INSERT INTO logs (name, body, ctime, mtime, delkey) VALUES (?,?,?,?,?)」
+　　　　SQLを[「🐳 お知らせ」,「👋{F名前}さんが退室しました。」,F今,F今,FID]でPDO実行。
+　　ここまで。
 　　「F名前」を「」へセッション設定。
 　　「FID」を「」へセッション設定。
 　　「
@@ -126,6 +133,10 @@ DB作成処理。
 　　FID＝（システム時間ミリ秒）＆「#」&(9999の乱数)。
 　　「F名前」をF名前でセッション設定。
 　　「FID」をFIDでセッション設定。
+　　F今＝システム時間。
+　　SQL=「INSERT INTO logs (name, body, ctime, mtime, delkey) VALUES (?,?,?,?,?)」
+　　SQLを[「🐳 お知らせ」,「😃{F名前}さんが入室しました！」,F今,F今,FID]でPDO実行。
+
 　　「location: ./」にヘッダ設定。
 　　「<a href="./">{F名前}：here</a>」をHTML出力。
 ここまで。

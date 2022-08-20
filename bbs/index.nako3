@@ -1,13 +1,13 @@
+# -------------------------------------------------
 # なでしこで作った掲示板 for nadesiko3php
+# -------------------------------------------------
 # === 設定 ===
 BBSタイトル=「なでしこ3PHPで作った掲示板」
 合い言葉質問＝『ここに「なでしこ」の四文字をカタカナで入力してください。』
 合い言葉答え＝「ナデシコ」
-DB保存先＝「./logs.sqlite3」
-
+「./logs.kudb」にKUDB接続。
 # === メイン処理 ===
-DB作成処理。
-実行モード=「実行モード」を「一覧表示」でPOST取得
+実行モード=「実行モード」を「一覧表示」でPOST取得。
 実行モードで条件分岐
 　「一覧表示」ならば、一覧表示💧
 　「書き込み」ならば、書込処理💧
@@ -16,12 +16,11 @@ DB作成処理。
 
 ●一覧表示とは
 　　HTML=「」
-　　DBログ取得処理。
-　　それを反復
+　　KUDB全取得して反復
 　　　　「<div class="line">
-<span class="name">[[name]] &gt;</span>
-<span class="body">[[body]]</span>
-<span class='date'>([[mtime|date]] [[mtime|time]])</span>
+<span class="name">[[名前]] &gt;</span>
+<span class="body">[[本文|br]]</span>
+<span class='date'>([[日時|date]] [[日時|time]])</span>
 </div>」に対象をHTML埋め込んでSに代入。
 　　　　HTML=HTML&S
 　　ここまで。
@@ -29,20 +28,18 @@ DB作成処理。
 ここまで。
 
 ●書き込み処理とは
-　　名前＝「名前」を空でPOST取得。
-　　本文＝「本文」を空でPOST取得。
-　　言葉＝「合い言葉」を空でPOST取得。
-　　もし、（名前=空）または（本文＝空）ならば
+　　F名前＝「名前」を空でPOST取得。
+　　F本文＝「本文」を空でPOST取得。
+　　F言葉＝「合い言葉」を空でPOST取得。
+　　もし、（F名前=空）または（F本文＝空）ならば
 　　　　「名前と本文を指定してください！」を警告指定。
 　　　　それをHTML出力して戻る。
 　　ここまで。
-　　もし、（言葉≠合い言葉答え）ならば
+　　もし、（F言葉≠合い言葉答え）ならば
 　　　　「合い言葉が違うため書き込めません!」を警告指定。
 　　　　それをHTML出力して戻る。
 　　ここまで。
-　　F今＝システム時間。
-　　SQL=「INSERT INTO logs (name,body,ctime,mtime)VALUES(?,?,?,?)」
-　　SQLを[名前,本文,F今,F今]でPDO実行。
+　　{"名前":F名前, "本文":F本文, "日時":(システム時間)}をKUDB挿入。
 　　「location:./」にヘッダ設定。
 　　「<h2><a href="./">書き込みました</a></h2>」をHTML出力。
 ここまで。
@@ -71,7 +68,7 @@ DB作成処理。
 <div class="box" style="border:1px solid silver; margin:0.5em;">
   <form method="POST">
     名前:<input class="input" type="text" name="名前" placeholder="お名前"><br>
-    本文:<input class="input" type="text" name="本文" placeholder="本文">
+    本文:<textarea class="textarea" t name="本文"></textarea>
     合い言葉: <input class="input" type="text" name="合い言葉"
       placeholder="{合い言葉質問}">
     <input type="hidden" name="実行モード" value="書き込み">
@@ -111,23 +108,4 @@ DB作成処理。
     <a class="button" href="https://github.com/kujirahand/phpnako-exampe-bbs/">この掲示板のソースコードはこちら</a>
 </div>
 </body></html>」
-ここまで。
-
-●DB作成処理とは
-　　「sqlite:{DB保存先}」のPDO生成。
-　　SQL=「
-CREATE TABLE IF NOT EXISTS logs (
-  id      INTEGER PRIMARY KEY,
-  name    TEXT DEFAULT '',
-  body    TEXT DEFAULT '',
-  ctime   INTEGER DEFAULT 0,
-  mtime   INTEGER DEFAULT 0,
-  delkey  TEXT DEFAULT ''
-)」
-　　SQLを[]でPDO実行。
-ここまで。
-
-●DBログ取得処理とは
-　　SQL=「SELECT * FROM logs ORDER BY id DESC LIMIT 30」
-　　SQLを[]でPDO全取得。
 ここまで。

@@ -15,22 +15,33 @@ WEBアプリの開発では、プログラミング言語＋HTML＋CSS＋SQLと�
 まずは、Node.jsをインストールし、その後、なでしこ3PHPをインストールします。
 ターミナル(ターミナル.app / PowerShell)を起動し、以下のコマンドを実行すると、なでしこ3PHPがインストールされます。
 
-```
-$ npm install nadesiko3php
+```sh
+npm install -g nadesiko3php
 ```
 
-## プログラムを変換する方法
+## プログラムを変換して実行する方法
 
+例えば、サンプルのbbsを実行するには、以下のコマンドを実行します。
 以下のコマンドを実行すると、なでしこのプログラムがPHPに変換されます。
 
+```sh
+# BBSのサンプルフォルダに移動
+cd bbs
+# なでしこのプログラムをPHPに変換
+npm start
+# PHPのローカルサーバーを起動
+php -S localhost:8888
 ```
-$ npm start
-```
+
+ブラウザを起動して `http://localhost:8888` にアクセスすると掲示板アプリを実行できます。
+
+## その他の方法
 
 あるいは、Linux/macOSでは以下のように書いても同じです。
 
-```
-$ npm -g nadesiko3php 
-$ phpnako -r .
+```sh
+cd bbs
+npm install -g nadesiko3php 
+phpnako -r .
 ```
 
